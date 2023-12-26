@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Design;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Channels;
 
@@ -24,9 +25,6 @@ namespace Miniräknare_inlämning
 
                 calculator.MataInTal();
 
-                Console.WriteLine(@"Vilken matematik vill du räkna "" + "", "" - "", "" * "", "" / "" och enter för att fortsätta");
-                calculator.aritmetiskaOperationer = Console.ReadLine();
-
                 decimal resultat = calculator.Beräkna(uträkningLista);
 
                 // Visa resultat
@@ -45,15 +43,15 @@ namespace Miniräknare_inlämning
                 {
                     break;
                 }
-                Console.WriteLine();
             }
         }
     }
     class Calculator
     {
-        public decimal tal1;
-        public string aritmetiskaOperationer;
-        public decimal tal2;
+        public decimal tal1 { get; set; }
+        public string aritmetiskaOperationer { get; set; }
+        public decimal tal2 { get; set; }
+
 
 
         // Användaren matar in tal och matematiska operation
@@ -61,6 +59,7 @@ namespace Miniräknare_inlämning
         public void MataInTal()
         {
             tal1 = KontrolleraInmatning("Skriv in det första talet och enter för att fortsätta");
+            aritmetiskaOperationer = KontrolleraInmatningaritmetiskaOperationer(@"Vilken matematik vill du räkna "" + "", "" - "", "" * "", "" / "" och enter för att fortsätta");
             tal2 = KontrolleraInmatning("Skriv in det andra talet och enter för att fortsätta");
         }
 
@@ -83,22 +82,24 @@ namespace Miniräknare_inlämning
                 }
             }
         }
-        private decimal KontrolleraInmatningaritmetiskaOperationer(string meddelande)
+
+        private static List<string> AritmetiskaTecken = new List<string> { "+", "-", "*", "/" };
+        private string KontrolleraInmatningaritmetiskaOperationer(string meddelande)
         {
-            decimal tal;
+            string användarensTecken;
 
             while (true)
             {
                 Console.WriteLine(meddelande);
-                string användarensTal = Console.ReadLine();
+                användarensTecken = Console.ReadLine();
 
-                if (decimal.TryParse(användarensTal, out tal))
+                if (AritmetiskaTecken.Contains(användarensTecken))
                 {
-                    return tal;
+                    return användarensTecken;
                 }
                 else
                 {
-                    Console.WriteLine("Ogiltig inmatning. Var god mata in ett tal.");
+                    Console.WriteLine("Ogiltig inmatning. Var god mata in ett tecken.");
                 }
             }
         }
@@ -130,7 +131,6 @@ namespace Miniräknare_inlämning
                         resultat = (tal1 / tal2);
                     }
                     break;
-
                 default:
                     Console.WriteLine("Något gick fel");
                     break;
